@@ -19,11 +19,17 @@ interface CartContextData {
   updateProductAmount: ({ productId, amount }: UpdateProductAmount) => void;
 }
 
+interface AmountListType {
+  
+}
+
 const CartContext = createContext<CartContextData>({} as CartContextData);
 
 export function CartProvider({ children }: CartProviderProps): JSX.Element {
   
   const [cart, setCart] = useState<Product[]>([])
+  
+  const [amountList , setAmountList] = useState<AmountListType[]>([])
   
   //(() => {
     // const storagedCart = Buscar dados do localStorage
@@ -35,12 +41,33 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
     //return [];
   //});
 
-  useEffect(()=>{ console.log(cart)},[cart])
+  useEffect(()=>{ 
+    console.log(cart)
+    console.log(amountList)
+  
+  
+  
+  },[cart])
 
   const addProduct = async (productId: number) => {
     try {
       let productToBeAdd = await api.get(`/products/${productId}`).then( res => res.data )
       setCart(cart.concat(productToBeAdd))
+
+      let productAmount =  "queijo"
+
+      //setAmountList(amountList.concat(productAmount))
+
+      let temp = [productId , cart.reduce((acc, produto)=>{
+        if( productId === produto.id) {
+          return acc + 1
+      }
+        return acc
+      }, 1 )]
+
+      setAmountList(amountList.concat(temp))
+
+      
       
     } catch {
       // TODO
