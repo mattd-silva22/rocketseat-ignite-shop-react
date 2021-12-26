@@ -1,3 +1,4 @@
+
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { api } from '../services/api';
@@ -27,23 +28,30 @@ const CartContext = createContext<CartContextData>({} as CartContextData);
 
 export function CartProvider({ children }: CartProviderProps): JSX.Element {
   
-  const [cart, setCart] = useState<Product[]>([])
   
-  const [amountList , setAmountList] = useState<AmountListType[]>([])
+
+  const [cart, setCart] = useState<Product[]>(() => {
+    const storagedCart = localStorage.getItem('@RocketShoes:cart');
+
+     if (storagedCart) {
+       return JSON.parse(storagedCart);
+     }
+
+    return [];
+  });
   
-  //(() => {
-    // const storagedCart = Buscar dados do localStorage
-
-    // if (storagedCart) {
-    //   return JSON.parse(storagedCart);
-    // }
-
-    //return [];
-  //});
+  const [amountList , setAmountList] = useState<AmountListType[]>([]);
+  
+  
+  
 
   useEffect(()=>{ 
+    
+
     console.log(cart)
-    console.log(amountList)
+    localStorage.setItem('@RocketShoes:cart', JSON.stringify(cart))
+    
+    
   
   
   
@@ -52,23 +60,12 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
   const addProduct = async (productId: number) => {
     try {
       let productToBeAdd = await api.get(`/products/${productId}`).then( res => res.data )
+
+      
+
       setCart(cart.concat(productToBeAdd))
 
-      let productAmount =  "queijo"
-
-      //setAmountList(amountList.concat(productAmount))
-
-      let temp = [productId , cart.reduce((acc, produto)=>{
-        if( productId === produto.id) {
-          return acc + 1
-      }
-        return acc
-      }, 1 )]
-
-      setAmountList(amountList.concat(temp))
-
-      
-      
+  
     } catch {
       // TODO
     }
