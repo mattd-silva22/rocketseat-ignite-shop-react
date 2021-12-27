@@ -67,7 +67,7 @@ const Cart = (): JSX.Element => {
               </div>
             </td>
             <td>
-              <strong>{formatPrice(product.price)}</strong>
+              <strong>{formatPrice(product.price * product.amount)}</strong>
             </td>
             <td>
               <button
@@ -114,7 +114,7 @@ const Cart = (): JSX.Element => {
         <Total>
           <span>TOTAL</span>
           <strong>{ formatPrice(cart.reduce((acc , item)=> {
-            return acc + item.price
+            return acc + (item.price * item.amount)
           },0))}</strong>
         </Total>
       </footer>
